@@ -3,47 +3,62 @@ import numpy as np
 import matplotlib.pyplot as plot
 
 
-def graph(*args, **kwargs):
+def graph(func):
     gc = GraphComplexity()
-    return gc.run(*args, **kwargs)
+    def wrapper(*args, **kwargs):
+        gc.run(func, *args, **kwargs)
+        return gc.results()[0]
+    return wrapper
+
+def graph_many(func):
+    gc = GraphComplexity()
+    def wrapper(*args, **kwargs):
+        return gc
+    return wrapper
 
 class GraphComplexity:
     def __init__(self):
-        self.input_sizes = []
-        self.run_times = []
+        self.__input_sizes = []
+        self.__run_times = []
+        self.__results = []
 
-    def run(self, func, test_cases=None, save_file=False, save_path='./plot.png'):
-        outputs = self.graph_many(func, test_cases)
-        self.plot_results(save_file, save_path)
-        return outputs or None
+    def run(self, func, test_case, show_time=False):
+        self.__run_tests(func, test_case, show_time)
 
-    def graph_many(self, func, test_cases):
-        results = []
-        for tc in test_cases:
-            start_time = time.time()
-            self.input_sizes.append(len(tc))
-            result = func(tc)
-            if result:
-                results.append(result)
-            total_time = time.time() - start_time
-            self.run_times.append(total_time)
-        return results or None
+    def __run_tests(self, func, test, show_time):
+        start_time = time.time()
+        self.__input_sizes.append(len(test))
+        result = func(test)
+        if result:
+            self.__results.append(result)
+        total_time = time.time() - start_time
+        if show_time:
+            print(total_time)
+        self.__run_times.append(total_time)
 
-    def plot_results(self, save_file, save_path):
+    def results(self):
+        return self.__results
+
+    def plot(self, save_file=False, save_path='./plot.png'):
+        if not (self.__input_sizes and self.__run_times):
+            print('GraphComplexity: No test results to plot.')
+            return None
         plot.xlabel('Input Size')
         plot.ylabel('Time')
-        p = np.poly1d(np.polyfit(self.input_sizes, self.run_times, 5))
-        plot.plot(self.input_sizes, self.run_times, 'or')
-        plot.plot(self.input_sizes, [p(n) for n in self.input_sizes], '.b')
+        p = np.poly1d(np.polyfit(self.__input_sizes, self.__run_times, 5))
+        plot.plot(self.__input_sizes, self.__run_times, 'or')
+        plot.plot(self.__input_sizes, [p(n) for n in self.__input_sizes], '.b')
         plot.show()
         if save_file:
             if '.' in save_path:
                 plot.savefig(save_path)
+        return self
+
 
 if __name__ == '__main__':
-    from algorithms.sort import quick_sort
-    import random
-    test_cases = []
-    for i in range(0, 100):
-        test_cases.append([random.randint(0,1000) for i in range(random.randint(0,10000))])
-    results = graph(quick_sort, test_cases)
+    @graph
+    def fun(n):
+        if n > 0:
+            print('n: ', n)
+            fun(n - 1)
+        return

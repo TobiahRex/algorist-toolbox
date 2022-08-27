@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>list_permutations</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>RECURSION_get_list_permutations</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -14593,26 +14593,51 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Permutations-of-an-Array">Permutations of an Array<a class="anchor-link" href="#Permutations-of-an-Array">&#182;</a></h1><p><a href="https://leetcode.com/problems/permutations/">LeetCode #46</a></p>
-<h2 id="General-Theory">General Theory<a class="anchor-link" href="#General-Theory">&#182;</a></h2><ul>
-<li>Uses a <strong>slate</strong> as a global-variable and inserts the Tree-Node's result into the slate on every Manager's call.</li>
-</ul>
-<p>Further, this slate uses a Dynamically adjusted <strong>divider</strong> within the slate to logically separate 2 individual
-pieces of state; 1. <strong>slate</strong>, 2. Elements not within the <strong>slate</strong>.</p>
+<h1 id="Permutations-of-List">Permutations of List<a class="anchor-link" href="#Permutations-of-List">&#182;</a></h1><p><a href="https://leetcode.com/problems/permutations/">LeetCode #46</a></p>
+<p>Generate all permutations of a given list of the <strong>same size</strong></p>
 <ul>
-<li>Uses a loop at each node, therefore the conceptual understanding is NOT a tree, just a callstack.<ul>
-<li>More on this in the <strong>Take Away</strong> section.</li>
+<li>Exmaple 1:<ul>
+<li>Input <code>[1, 2, 3]</code></li>
+<li>Output:<div class="highlight"><pre><span></span>[[1, 2, 3],
+     [1, 3, 2],
+     [2, 1, 3],
+     [2, 3, 1],
+     [3, 1, 2],
+     [3, 2, 1]]
+</pre></div>
+</li>
+<li>This is otherwise known as <em>k-permutations of n</em>: which are the different ordered arrangements of a k-element subset of an n-set (sometimes called variations or arrangements). Also known as <em>partial permutations</em>.</li>
 </ul>
 </li>
 </ul>
-<h2 id="Control-Flow">Control Flow<a class="anchor-link" href="#Control-Flow">&#182;</a></h2><ol>
-<li>The <strong>base case</strong> is to check if the <strong>slate</strong> is full. If so, then we've reached a leaf-node within the tree and we've completed the task of generating an answer. Append contents of the slate to the results.</li>
-<li>Each <strong>manager</strong> / <strong>node</strong> will have the job of iterating through the sub-section of the numbers that are to the <em>right</em> of the slate's divider.<ul>
-<li>This loops will run n-l times (n = # of elements, l = Tree-Level).</li>
+<h3 id="Time-Complexity-Intuition">Time Complexity Intuition<a class="anchor-link" href="#Time-Complexity-Intuition">&#182;</a></h3><ol>
+<li>This is not exactly an n-choose-k problem. Rather it's a <strong>permutation</strong> problem, with a twist. <strong>Permutations</strong> take into account elements of different sizes. In this case, we're collecting answers with the same size. To determine the total number of answers we're looking for, we can use the formula below.<ul>
+<li><img src="https://imgur.com/eXok0Cd.png" style="max-width:400px">
+</li>
+<li>Looking at the bottom formula in the top photo, we can see how similar this expression is to the nCk expression, but slightly different as it's missing the second <code>k!</code>.</li>
+<li>Here's a distribution of our example.</li>
+<li><img src="https://imgur.com/30vncng.png" style="max-width:400px">
+</li>
 </ul>
 </li>
-<li>Within this loop, we perform 3 operations.</li>
-<li><em>First</em>: We swap the i'th element from our current scope'd loop, with the value adjacent to the slate's current divider position. See example below</li>
+<li>Using the formula, we can immediately tell our Time Complexity is <code>N!</code> (e.g. <code>3 * 2 * 1 * (1)</code>)</li>
+</ol>
+<h3 id="Designing-the-Solution">Designing the Solution<a class="anchor-link" href="#Designing-the-Solution">&#182;</a></h3><p>How to think about the solution</p>
+<h4 id="A.-Strategy">A. Strategy<a class="anchor-link" href="#A.-Strategy">&#182;</a></h4><ol start="0">
+<li>Clue 1. Given that the solution requires N! time, we know we're going to need some type of tree. We can also realize that our work per-tree level is going to decrease by k, as k increases.  So if we think of the Tree structure in terms as always<ul>
+<li><blockquote>
+How many levels?</blockquote>
+</li>
+<li><blockquote>
+How many branches per level?</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+<p>We can immediately intuitively come to the idea that we'll have n-levels, and k-branches per level.</p>
+<ol>
+<li>Clue 2. Given we'll have a varying amount of branches per level, we know we need a loop per node.</li>
+<li>Clue 3. Given that we know k should decrease per factor, we know the loop's size decreases depending on it's level in the tree, which means, it's length depends on some input.</li>
 </ol>
 
 </div>
@@ -14626,11 +14651,13 @@ pieces of state; 1. <strong>slate</strong>, 2. Elements not within the <strong>s
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Control Flow.4 Example</span>
-<span class="n">slate</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="c1">#             ^   i = 1   ----&gt;   divider position</span>
-<span class="n">swap</span><span class="p">(</span><span class="n">slate</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span> <span class="c1"># i = 1, pos = 1</span>
-<span class="n">slate</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">solution</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="c1">#TODO: define next result</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)):</span>
+        <span class="c1"># TODO: define work to be done</span>
 </pre></div>
 
      </div>
@@ -14645,35 +14672,21 @@ pieces of state; 1. <strong>slate</strong>, 2. Elements not within the <strong>s
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Control-Flow-(cont'd)">Control Flow (cont'd)<a class="anchor-link" href="#Control-Flow-(cont'd)">&#182;</a></h2><ol start="4">
-<li>[cont'd] - Theoretically we're trying to invision that the divider sits between index 1 &amp; 2, so we say it's at index 1.
- <code>pos</code> is describing the divider's current position. <code>0 to pos - 1</code> = All elements <strong>within</strong> the slate. And <code>pos to len(array)</code>  = All elements outside the slate.</li>
-<li>After we've called recursively and eventually arrived at a leaf node, we'll retrace to a previous call, and undo the swap we made. Then we'll iterate through the Node's loop, and swap again.</li>
-<li>On a high-level, we should think of separation of concerns as follows<ul>
-<li>Tree-Level-Work:<ul>
-<li>Decide the size of the slate we're filling by fixing the slate-divider location.</li>
-<li>Produce less work (smaller loop length) the deeper into the tree we go.</li>
-</ul>
-</li>
-<li>Node-Level-Work:<ul>
-<li>Swaps elements with the divider.</li>
-<li>Number of elements to be swapped = n-l. n = size of input. l = tree-level.</li>
-</ul>
+<ol start="3">
+<li>Now the question becomes what work do we do inside our loop? A node should increment the next possible answer by a unit of 1 work-units; meaing the Node should append to the next result. But looking at the solutions, instead of <em>append</em>, we should <em>swap</em> out the last work done, with our next work to be done.</li>
+</ol>
+<h2 id="B.Tactics">B.Tactics<a class="anchor-link" href="#B.Tactics">&#182;</a></h2><ol>
+<li>The <strong>base case</strong> will be to check if our tree has reached its target depth, which we'll track with <code>n</code>.</li>
+<li>Each <strong>node</strong> will have the job of swapping a value in the next result, with a new value, then calling its next worker.</li>
+<li>As the control flow returns to that <strong>node</strong> from a subordinate call, the node will re-swap the same value i.e. <strong>Backtrack</strong>.</li>
+<li>Then the node will continue to iterate across it's area of responsibility as defined by it's k-length and call again.<ul>
+<li><img src="https://imgur.com/wg1krAc.png" style="max-width:400px">
 </li>
 </ul>
 </li>
 </ol>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Below is the final solution
+.</p>
 
 </div>
 </div>
@@ -14686,28 +14699,15 @@ pieces of state; 1. <strong>slate</strong>, 2. Elements not within the <strong>s
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">swap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-    <span class="n">a</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
-
-<span class="k">def</span> <span class="nf">get_set_permutations</span><span class="p">(</span><span class="n">slate</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="p">[]):</span>
-    <span class="k">if</span> <span class="n">pos</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">slate</span><span class="p">):</span>
-        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slate</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
-        <span class="k">return</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">slate</span><span class="p">)):</span>
-        <span class="n">swap</span><span class="p">(</span><span class="n">slate</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
-        <span class="n">get_set_permutations</span><span class="p">(</span><span class="n">slate</span><span class="p">,</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
-        <span class="n">swap</span><span class="p">(</span><span class="n">slate</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Final Solution</span>
+<span class="k">def</span> <span class="nf">permutations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swap</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swap</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">results</span>
-
-<span class="n">result</span> <span class="o">=</span> <span class="n">get_set_permutations</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="n">answer</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
-<span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="n">answer</span><span class="p">,</span> <span class="s1">'should be equal'</span>
 </pre></div>
 
      </div>
@@ -14722,11 +14722,23 @@ pieces of state; 1. <strong>slate</strong>, 2. Elements not within the <strong>s
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Tests">Tests<a class="anchor-link" href="#Tests">&#182;</a></h2>
+
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Tests">Tests<a class="anchor-link" href="#Tests">&#182;</a></h3><p>Below is the solution embedded into a test class using random sized test cases.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -14735,22 +14747,15 @@ pieces of state; 1. <strong>slate</strong>, 2. Elements not within the <strong>s
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">unittest</span>
-<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span> <span class="k">as</span> <span class="n">rint</span>
 
-<span class="k">class</span> <span class="nc">PermutationTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+<span class="k">class</span> <span class="nc">ListPermutations</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">PermutationTests</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ListPermutations</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">test_result_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">test_cases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_test_cases</span><span class="p">(</span><span class="n">hi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">case_len</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cases</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">tc</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">get_set_permutations</span><span class="p">(</span><span class="n">tc</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">6</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="n">tc</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">test_result_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">test_case</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">get_set_permutations</span><span class="p">(</span><span class="n">test_case</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">(</span><span class="n">test_case</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">result</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">result</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">)</span>
@@ -14759,20 +14764,66 @@ pieces of state; 1. <strong>slate</strong>, 2. Elements not within the <strong>s
         <span class="bp">self</span><span class="o">.</span><span class="n">assertNotIn</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">result</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertNotIn</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Test Case: '</span><span class="p">,</span> <span class="n">test_case</span><span class="p">,</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">Answer: '</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">permutations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">swap</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">swap</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">swap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">run_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">test_cases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_test_cases</span><span class="p">(</span><span class="n">hi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">case_len</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cases</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tc</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">(</span><span class="n">tc</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">6</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="n">tc</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_test_cases</span><span class="p">(</span><span class="n">hi</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">case_len</span><span class="p">,</span> <span class="n">cases</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">random</span>
         <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">[</span><span class="n">rint</span><span class="p">(</span><span class="n">hi</span><span class="p">,</span> <span class="n">lo</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">case_len</span><span class="p">)]</span>
+            <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">hi</span><span class="p">,</span> <span class="n">lo</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">case_len</span><span class="p">)]</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cases</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">test_cases</span>
 
-<span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[</span><span class="s1">'first-arg-is-ignored'</span><span class="p">],</span> <span class="n">exit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">lp</span> <span class="o">=</span> <span class="n">ListPermutations</span><span class="p">()</span>
+<span class="n">lp</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">lp</span><span class="o">.</span><span class="n">run_tests</span><span class="p">()</span>
 </pre></div>
 
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Test Case:  [1, 2, 3] 
+Answer:  [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 2, 1], [3, 1, 2]]
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -14783,28 +14834,27 @@ pieces of state; 1. <strong>slate</strong>, 2. Elements not within the <strong>s
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="TakeAways">TakeAways<a class="anchor-link" href="#TakeAways">&#182;</a></h3><ol>
-<li>This problem is concerned with moving a series of elements to a particular location. It accomplishes this by using a loop at every recursive node. Because the quantity of these elements to be moved is dynamic, we can assign a thought-pattern to this particular type of problem:<ul>
-<li>The Recursive Mental-Model will <strong>NOT be a tree</strong> but rather a <strong>uni-directional stack</strong> of calls.</li>
+<li>This problem is concerned with performing a variable amount of work at each node in the tree. The size of the work is defined by the <em>previous</em> Node, and will be 1 unit less work the deeper in the tree we go.</li>
+<li>This inherent decreasing loop dynamic, emulates a Factorial. <code>4! = 4 * 3 * 2 * 1</code></li>
+<li><strong>Intuition</strong> for Loops + Recursion.<ol>
+<li><blockquote>
+Is the loop a fixed length? or dynamic length?</blockquote>
+<ul>
+<li>if <em>Dynamic</em>: Then the work will be a decreasing/increasing summation: The recursive stack will be T(n) *either <code>(n-1)/2</code> or <code>(n+1)/2</code> will still result in some quadratic time, but an average.</li>
+<li>if <em>Static</em>: Then the work will be fixed, and it can be multiplied by the depth of your recursive calls.</li>
 </ul>
 </li>
-<li>Each call, will perform a <strong>loops-worth of work</strong>.  This will generally mean, we're still doing some <strong>Quadratic</strong> order of work so pay close attention to Reccurence Relation to verify.</li>
-<li><strong>Intuition</strong> for <em>Recursive-Tree's</em> : They are a product of deciding between a <em>forks-in-the-road</em> which forces us to decide between 2 choices;<ul>
 <li><blockquote>
-&quot;should i take it or leave it?&quot;,</blockquote>
-</li>
-<li><blockquote>
-&quot;should i change it or not change it?&quot;.</blockquote>
+How many recursive calls are there per node? i.e. # of branches per node?</blockquote>
+<ul>
+<li>If there is only 1 call:<ul>
+<li>If that call is <strong>inside</strong> the loop, then the tree will have N-branches.</li>
+<li>If that call is <strong>outside</strong> the loop, then the tree will have #-of-calls-branches.</li>
+</ul>
 </li>
 </ul>
 </li>
-<li><strong>Intuition</strong> for <em>Recursive-Stacks</em> : They are a product of a <em>repetition-of-work</em>. Doing the same-thing over and over again, but the work-to-be-done is dynamically changing over time. I should think about a loop + recursive stack whenever similar situations arise I should think of a loop + recursion.<ul>
-<li><blockquote>
-I must repeatedly move a pile of rocks, from point A to point B to point C..</blockquote>
-</li>
-<li><blockquote>
-I must repeatedly move N piles of rocks to M different locations.</blockquote>
-</li>
-</ul>
+</ol>
 </li>
 </ol>
 
@@ -14818,17 +14868,17 @@ I must repeatedly move N piles of rocks to M different locations.</blockquote>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Tracing-Tree-Analysis">Tracing Tree Analysis<a class="anchor-link" href="#Tracing-Tree-Analysis">&#182;</a></h3><ol>
+<h3 id="State-Spaced-Tree-Analysis">State-Spaced-Tree Analysis<a class="anchor-link" href="#State-Spaced-Tree-Analysis">&#182;</a></h3><ol>
 <li>Input is <code>[1, 2, 3]</code> so <code>N = 3</code></li>
 </ol>
-<img src="https://imgur.com/KMlTMZo.png">
+<img src="https://imgur.com/KMlTMZo.png" style="max-width:500px">
 <h3 id="Time-Complexity-Analysis">Time Complexity Analysis<a class="anchor-link" href="#Time-Complexity-Analysis">&#182;</a></h3><ol start="0">
 <li>Input size was considered as <code>N = 4</code> for stronger understanding.</li>
 <li>The intuitive approach is to isolate the factorial distribution of the tracing tree.  At <strong>L1</strong> we can see  that <code>4!</code> is 4 groups of 3 iterations. At <strong>L2</strong> we can see <code>3!</code> which is 3 groups of 2 iterations.</li>
 <li>Taking special consideration at <strong>L0</strong> we can think of this level as a mandatory level where we group 4! into 1 location.</li>
 <li>At each leaf node in the tree, we perform a copy of a result array that has size <code>N</code>, which is why we multiply <code>N!</code> (tree work) by <code>N</code> (copy work).</li>
 </ol>
-<img src="https://imgur.com/QnHxia1.png">
+<img src="https://imgur.com/QnHxia1.png" style="max-width:350px">
 
 </div>
 </div>

@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>count_subsets_size_n</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>RECURSION_letter-case-permutation</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -14593,29 +14593,57 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Counting-Unique-Sets">Counting Unique Sets<a class="anchor-link" href="#Counting-Unique-Sets">&#182;</a></h3><blockquote>
-<p>Given a number denoting the size of a set, count the number of unique subsets of that set.</p>
-</blockquote>
-<p>These types of problems:
-    - counting the # of sets
-    - # of permutations
-    - # of sub-groups given a larger group</p>
-<p>Are all problems having to deal with <strong>Binomials</strong>.</p>
-<h4 id="Intuition-of-Binomials.">Intuition of Binomials.<a class="anchor-link" href="#Intuition-of-Binomials.">&#182;</a></h4><ol>
-<li>Example: A parent wants to know the probability of of having 3 girls and 2 boys.<ul>
-<li>The <em>bi</em> in <em>bi-nomial</em> refers to 2 possible variables; in this case, a = girls, b = boys. Therefore, to calculate the probability, we'd take the bi-nomial of (A + B)^5. The <code>5</code> denotes the # of desired children.</li>
-<li>If we were to distribute this function out, we'd get a series of bi-nomial expressions. The co-efficients of these expressions can be considered the <em>weight</em> of that particular expression in relationship to all it's partner expressions; which is intuitive.</li>
-<li>If we were to take the ratio of the expression that maps to A^3 (3 girls), we'd see the coefficient 10 standing next to it. We take the 10 and divide by the sum of all coefficients and get 32, so the probability is 10 / 32.</li>
-<li>The entire expression looks like:<div class="highlight"><pre><span></span><span class="mi">1</span><span class="p">(</span><span class="n">a</span><span class="o">^</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span><span class="p">(</span><span class="n">a</span><span class="o">^</span><span class="mi">4</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span><span class="p">(</span><span class="n">a</span><span class="o">^</span><span class="mi">3</span> <span class="n">b</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span><span class="p">(</span><span class="n">a</span><span class="o">^</span><span class="mi">2</span> <span class="n">b</span><span class="o">^</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span><span class="p">(</span><span class="n">a</span> <span class="n">b</span><span class="o">^</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">(</span><span class="n">b</span><span class="o">^</span><span class="mi">5</span><span class="p">)</span>
-</pre></div>
-</li>
+<h1 id="Letter-Case-Permutations">Letter Case Permutations<a class="anchor-link" href="#Letter-Case-Permutations">&#182;</a></h1><p><a href="https://leetcode.com/problems/letter-case-permutation/">LeetCode #784</a></p>
+<p>Given a string, transform all letters to upper and lower case and return all permutations that can be formed this way.</p>
+<ul>
+<li>Example 1.<ul>
+<li><code>str = &quot;a12b&quot;</code></li>
+<li><code>expected_output = [&quot;A12D&quot;, &quot;A12b&quot;, &quot;a12B&quot;, &quot;a12b&quot;]</code></li>
 </ul>
 </li>
-<li>Example: A group of 12 friends want to play basketball, and you have to choose 5 members only. How many different groups of 5 can you choose, from a collection of 12?<ul>
-<li>The answer can be expressed as &quot;12 choose 5&quot;</li>
-<li>Using the <strong>Binomial Theorem: Expansion Formula</strong> (see above), we can come to the answer <code>792</code>.</li>
+<li>Example 2.<ul>
+<li><code>str = &quot;abc&quot;</code></li>
+<li><code>expected_output = ['ABC', 'ABc', 'AbC', 'Abc', 'aBC', 'aBc', 'abC', 'abc']</code></li>
 </ul>
 </li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Time-Complexity-Intuition">Time Complexity Intuition<a class="anchor-link" href="#Time-Complexity-Intuition">&#182;</a></h3><ol>
+<li>This is a n-choose-k problem. If the size of <code>n=4</code>, and the choice is to upper-case a letter, than how many total sets there are is the sum of:<ol>
+<li>4-C-0 (no letter's chosen to be uppercase) = 1</li>
+<li>4-C-1 (1 letter chosen to be uppercased) =  4</li>
+<li>4-C-2 (1 letter chosen to be uppercased) =  6</li>
+<li>4-C-3 (1 letter chosen to be uppercased) =  4</li>
+<li>4-C-4 (1 letter chosen to be uppercased) =  1</li>
+<li>The sum is <strong>16</strong> sets.</li>
+</ol>
+</li>
+<li>This analysis is how we can help ourselves explain Time Complexity of the solution. The strategy could be:<ol>
+<li>Draw Pascals triangle at depth of N, and width of Choice.</li>
+<li>Explain how this diagram outlines a State-Space-Tree, that would mirror the Time Complexity of the recursion, which justify that the Worst Case time is going to be 2^n.</li>
+<li>You could further explain that 2^n is intuitively thought of as work doubling on every new level in the tree.</li>
+</ol>
+</li>
+<li>At each level in the tree, we'll make 2 choices: make the letter upper-case, or make the letter lower-case.<ol>
+<li>If the letter is NOT a letter (it's a number), then we <strong>skip</strong> the work for that node, but continue to call recursively.  This is an important characteristic of this problem and potentially future problems like it - we do no work: simply call the next function once. Once the return comes back, we cleanup the work done by the function we called.</li>
+</ol>
+</li>
+<li>Whenever we've arrived at a length of 4, we'll take inventory of our proposed solution and insert it into our results.</li>
+</ol>
+<h3 id="Designing-the-Solution">Designing the Solution<a class="anchor-link" href="#Designing-the-Solution">&#182;</a></h3><p>How to think about the solution</p>
+<h4 id="A.-Strategy">A. Strategy<a class="anchor-link" href="#A.-Strategy">&#182;</a></h4><ol start="0">
+<li>Given that it's a nCk problem, we know we can find the result using a Brute-Force approach + State-Spaced-Tree.</li>
+<li>Given 0, we should first understand the required depth of our tree - it will almost certainly be, size N.</li>
 </ol>
 
 </div>
@@ -14629,11 +14657,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># not real code</span>
-<span class="k">def</span> <span class="nf">binomial_theorem</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-            <span class="p">(</span><span class="n">n</span><span class="o">!</span> <span class="err">\</span>
-        <span class="o">/</span> <span class="p">[(</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">)</span><span class="o">!</span>*k!<span class="o">])</span> * <span class="o">(</span>a^n-k<span class="o">)(</span>b^k<span class="o">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">slate</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">results</span>
 </pre></div>
 
      </div>
@@ -14649,167 +14675,29 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <ol start="2">
-<li>...<ul>
-<li><img src="https://imgur.com/52Og7Ff.png" style="max-width:500px">
+<li>Next we should understand how many branches a single node in our tree will have. This will depend on the # of choices we're being offered in the problem description.<ul>
+<li><blockquote>
+...transform all letters to upper and lower case</blockquote>
 </li>
-<li><strong>NOTE</strong> second <code>k</code> in denominator should be <code>k!</code></li>
-<li>For some problems, we can remove the outter loop and simply think of the <strong>Binomial Theorem</strong> without the <em>expansion</em>.</li>
+<li>This clearly indicates we'll have 2-choices: Transform to UpperCase or Not.</li>
 </ul>
 </li>
-<li>Binomial expression are actually the fundamental building block of <strong>Pascals Triangle</strong>.<ul>
-<li>The coefficients of different binomial degree's are stacked atop eachother at exponents corresponding to deeper tree levels.</li>
+<li>Next we should observe if our solution will have a series of fixed sizes, or the same size? Why? Because the answer to this question will tell us if we're collecting results at the leaf nodes, or at some mid-level nodes.<ul>
+<li><blockquote>
+return all permutations that can be formed this way.</blockquote>
+</li>
+<li><em>Permutations</em> initially seems to indicate the results will have dynamic sizes, but when we re-read the earlier part ...</li>
+<li><blockquote>
+Given a string, transform all letters</blockquote>
+</li>
+<li>We realize that a string is a fixed length, and we're simply to change individual letters. This means our answers will have a fixed size, which means we'll be collecting results at the leaf-nodes.</li>
 </ul>
- <img src="https://imgur.com/nfY3nFm.png" style="max-width:500px">
 </li>
 </ol>
-<h4 id="Problem-Solving-w/Binomials">Problem Solving w/Binomials<a class="anchor-link" href="#Problem-Solving-w/Binomials">&#182;</a></h4><p>The trick of all this mathematical background is to figure out how we can make all that theory work for us given a problem type.  So let's see if we can define some re-usable <strong>tools</strong> from it all.</p>
-<ul>
-<li>When we want to know how many sub-groups we can make from a larger group, we're wanting a single expression from a Bi-nomial Expansion formula. Further, we're actually asking for a specific co-efficient from the binomial expansion.</li>
-<li>Using the team-problem (choose 5 members from group of 12), we're actually not needing the &quot;nomial&quot; so we can assign it a value of 1 that effectively removes it from our consciousness for a lot of problems.</li>
-<li>If we're dealing with problems in terms of probability between choosing one-category more than another, then we can re-introduce those &quot;nomials&quot; and consider them in our algorithm such as having 3 girls and 2 boys. Briefly to expand</li>
-</ul>
-<p>this example - we could think of a &quot;bi-nomial&quot; expression as <code>a</code> equaling the group we're targeting or want, and <code>b</code> as the group we're negating, or don't want.</p>
-<ul>
-<li>So, it's important to understand how the sum of coefficients for the N'th level in Pascals triangle sum to 2^n. See diagram.</li>
-<li>Given that this expression looks a lot like a &quot;Tree&quot; we can quickly arrive at the realization that anytime we double the amount of work we do if we increase our input by 1 unit, we have to double the count of work we do.</li>
-</ul>
-<h4 id="Calculating-nCr">Calculating nCr<a class="anchor-link" href="#Calculating-nCr">&#182;</a></h4><p>The recurrence relation to generate a node in Pascals triangle is shown below.</p>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>The tracing tree for this solution is as follow</p>
-<img src="https://imgur.com/ITDyatB.png" style="max-width:500px">
-
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">nCk</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">n</span> <span class="o">==</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]):</span>
-        <span class="k">return</span> <span class="mi">1</span>
-    <span class="n">left_tree</span> <span class="o">=</span> <span class="n">nCk</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-    <span class="n">right_tree</span> <span class="o">=</span> <span class="n">nCk</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">left_tree</span> <span class="o">+</span> <span class="n">right_tree</span>
-
-<span class="n">n</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="n">k</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1"> choose </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1"> = '</span><span class="p">,</span> <span class="n">nCk</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>4 choose 2 =  6
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>The intuition is fairly concrete: We're taking advantage of the mathematical identity that any combination is defined as a sum of the subsets of the combination.
-What's interesting as well is if you flip the tracing tree upside down, you can sort of get a sense of how this solution is replicating Pascals Triangle (roughly speaking).</p>
-<img src="https://imgur.com/UWiBTmh.png" style="max-width:500px">
-<h5 id="Apply-Pascals-Triangle-to-Problem">Apply Pascals Triangle to Problem<a class="anchor-link" href="#Apply-Pascals-Triangle-to-Problem">&#182;</a></h5><p>So to solve this particular problem, we need to take the sum of an entire tree level in Pascals Triangle.  This would be the same as taking the sum of the coefficients.</p>
-
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">sum_of_unique_sets</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">nCk</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">n</span> <span class="o">==</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]):</span>
-            <span class="k">return</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">nCk</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="n">nCk</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
-        <span class="n">total</span> <span class="o">+=</span> <span class="n">nCk</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">total</span>
-
-<span class="n">n</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Unique Sets for size </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1"> = '</span><span class="p">,</span> <span class="n">sum_of_unique_sets</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Unique Sets for size 4 =  32
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Unfortunately, this solution has the problem of being O(n * n!)</p>
-<p>There's a mathematical proof that denotes how summing the coefficients for a tree level in Pascals Triangle equates to 2^n. The intuition here, is that each tree level describes all the possibilites of choice, if the previous set of choices has now doubled.  Another way to think of it is using the popular Greek Mythological creatures: The Hydra.  When you cut off one head, 2 more grow in it's place.  As for some real-world example, if you're travelling along some path, and you reach a fork in the road, and choose left, you shortly find another fork in the road. If every fork in the road leads to another fork in the road, you're going to inevitably find yourself with 2^n choices.</p>
-<p>So in essence, this problem is asking us to return 2^n. So we can simply define the soution to the problem as.</p>
+<h4 id="B.-Tactics">B. Tactics<a class="anchor-link" href="#B.-Tactics">&#182;</a></h4><ol>
+<li>Using a <em>slate</em> we can work our way down to Pascals Triangle Depth, all the while, appending a part of the solution along the way.  This tactic works for solutions of a fixed size, or of variable sizes.  If the solution has variable sizes - then we can assume results will be collected at different levels in the tree. If the sizes are all fixed, then we can be sure the result will be collected at the level corresponding to the length of the result (usually the leaf node).</li>
+<li>Let's disect the meat of this algorithm starting with the outtermost layer.</li>
+</ol>
 
 </div>
 </div>
@@ -14822,8 +14710,13 @@ What's interesting as well is if you flip the tracing tree upside down, you can 
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">sum_of_unique_sets</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
-    <span class="k">return</span> <span class="mi">2</span> <span class="o">**</span> <span class="n">size</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">char</span> <span class="o">=</span> <span class="nb">str</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>                                           <span class="c1"># TARGET: selecting a job</span>
+<span class="k">if</span> <span class="n">char</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
+    <span class="c1"># WORK to be DONE for choosing 1 of 2, then 2 of 2 choices.</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">slate</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">char</span>
+    <span class="c1"># NO WORK to be DONE, so skipping WORK</span>
+<span class="k">return</span> <span class="n">results</span>
 </pre></div>
 
      </div>
@@ -14838,11 +14731,162 @@ What's interesting as well is if you flip the tracing tree upside down, you can 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>😂</p>
+<p>The above code, demonstrates how there's a separation of concerns between which nodes do some WORK and which nodes simply don't do any work, but don't want to break the chain of events.  This type of structure indicates that a <strong>constraint</strong> exists in the problem.</p>
+<ul>
+<li>Example:<ul>
+<li><blockquote>
+Do some work, but only when this conditions is True.</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<p>We might be tempted to think; this means we should return from calling any more recursive calls: but that would be VERY WRONG. We need to continue calling recursively, we simply don't do any WORK, or make any choices.</p>
+<p>A Good Analogy:  You're running a relay race, and a series of runners before you ran 400 meters, than passed off the baton to you, once you have the batton, you don't run at all, and immediately pass the batton off to the next runner.</p>
+<p>Another Analogy:  You and some friends are walking different paths and they all find fork's in their paths, but you don't find any.</p>
 
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">char</span> <span class="o">=</span> <span class="nb">str</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>                                           <span class="c1"># TARGET: selecting a job</span>
+<span class="k">if</span> <span class="n">char</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
+    <span class="n">slate</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">char</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>                             <span class="c1"># WORK: Building up our next result</span>
+                                                        <span class="c1"># CHOOSING 1st of 2 options</span>
+    <span class="n">letter_case_permutation</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">slate</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>   <span class="c1"># handing the WORK over to the next WORKER.</span>
+
+    <span class="n">slate</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">char</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>                             <span class="c1"># BACKTRACKING:</span>
+                                                        <span class="c1"># Building up our next result</span>
+                                                        <span class="c1"># CHOOSING 2nd of 2 options</span>
+
+    <span class="n">letter_case_permutation</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">slate</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>   <span class="c1"># handing the WORK over to the next WORKER</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">slate</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">char</span>
+    <span class="n">letter_case_permutation</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">slate</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+<span class="k">return</span> <span class="n">results</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<ol start="3">
+<li><p>Zooming into the finer details, we can see what DOING WORK looks like; A node is responsible for picking up a job and then immediately casting it to uppercase if it's a letter. This is making the first of 2 choices.  This node sits in the call stack and waits for his turn to do some more work after he calls another node to work on top of his work.  Once the first call is finished, we make another transformation and call the other nodes again to work on top of our second choice.  Finally when both of those tasks are complete, we return up the call stack, signaling our job is done.</p>
+</li>
+<li><p>We can use <em>Backtracking</em> to undo our previous call's work done to the <em>slate</em>, to then modify our next possible answer.</p>
+</li>
+</ol>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">letter_case_permutation</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">slate</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>   <span class="c1"># handing the WORK over to the next WORKER.</span>
+
+<span class="n">slate</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">char</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>                             <span class="c1"># BACKTRACKING:</span>
+                                                    <span class="c1"># Building up our next result</span>
+                                                    <span class="c1"># CHOOSING 2nd of 2 options</span>
+<span class="n">letter_case_permutation</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">slate</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>   <span class="c1"># handing the WORK over to the next WORKER</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<ol start="3">
+<li>It should be noted that these 2 lines produce the <em>Backtracking</em> effect in this algorithm - we're overwriting our previous work with new work then making another call.</li>
+<li>The algorithm signature will have a recursive call to pass off the work responsbility to another node.</li>
+<li>The changes we make after this call, and before the next call will represent the different choice we're allowed to make for any given node.</li>
+<li>Once that node is finished, and all the sub-ordinate nodes' work has been &quot;collected&quot; in the form of a result, we can &quot;undo&quot; the staging of that result.</li>
+<li>In almost every case, there will be a constraint, or series of constraints defined in the problem. These constraints are how we have so many unique situations to solve. These constraints will also be <strong>vital clues</strong> to helping us justify our runtime complexity and determining the <em>Bounding Function</em> of our algorithm (edge case).</li>
+</ol>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">letter_case_permutation</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">slate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="k">if</span> <span class="n">slate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">slate</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">slate</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">results</span>
+    <span class="n">char</span> <span class="o">=</span> <span class="nb">str</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">char</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
+        <span class="n">slate</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">char</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">letter_case_permutation</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">slate</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+        <span class="n">slate</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">char</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">letter_case_permutation</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">slate</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">slate</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">char</span>
+        <span class="n">letter_case_permutation</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">slate</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Answer: "</span><span class="p">,</span> <span class="n">letter_case_permutation</span><span class="p">(</span><span class="s1">'abc'</span><span class="p">))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Answer:  [&#39;ABC&#39;, &#39;ABc&#39;, &#39;AbC&#39;, &#39;Abc&#39;, &#39;aBC&#39;, &#39;aBc&#39;, &#39;abC&#39;, &#39;abc&#39;]
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 </body>
 

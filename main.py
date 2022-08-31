@@ -1,3 +1,6 @@
+import unittest
+
+
 def check_if_sum_possible(arr, k, n=0, total=0):
     if n == len(arr):
         return True if (arr and total == k) else False
@@ -13,8 +16,6 @@ def check_if_sum_possible(arr, k, n=0, total=0):
     else:
         total += arr[n]
     return False
-
-
 
 if __name__ == '__main__':
     arr = [-10, 10]
@@ -33,3 +34,7 @@ if __name__ == '__main__':
     "arr": [-2, -2, 0, -3, -3, -4, 4, 3, 0, -2, -3, 2, -4, -2, 2, -2, -2, 0],
     "k": -35
 }
+
+class TestSomething(unittest.TestCase):
+    def __init__(self):
+        super().__init__()

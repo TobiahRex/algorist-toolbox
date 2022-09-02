@@ -67,7 +67,7 @@ A collection of **Jupyter Notebooks** focused on providing an intuitive understa
     - [ ] Exponent
     - [ ] Taylor Series
     - [ ] Factorial
-    - [ ] nCr
+    - [ ] nCk
 
 #### Problems | Technique | Tool
 1. [Towers of Hanoi]() | [LeetCode]()
